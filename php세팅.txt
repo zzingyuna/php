@@ -1,0 +1,47 @@
+아파치 서버 다운로드
+https://www.apachelounge.com/download/
+
+httpd-2.4.10-win64-VC11.zip 파일을 압축해재 하여 "C:\Apache24"에 넣어준다
+커맨드창에서 아래 명령어로 아파치 설치(관리자 권한으로)
+C:\Apache24\bin\httpd.exe -k install
+*아파치 경로 수정시 : {아파치 서버 설치 경로}\conf\httpd.conf 
+
+
+php 다운로드
+http://windows.php.net/download/
+
+위에서 다운로드한 php-5.6.5-Win32-VC11-x64.zip 파일은 64비트 윈도우용 PHP 파일이 포함되어 있는 압축파일입니다. 아파치 서버를 설치할 때와 마찬가지로 접근하기 쉬운 경로에 압축을 풀어줍니다. 이 글에서는 윈도우용 PHP의 기본 폴더인 C:\PHP 에 압축을 풀었습니다. 압축을 풀었다면 다음 과정을 통하여 PHP 설치를 마무리하도록 합니다.
+
+PHP가 설치된 경로이 글에서는 C:\PHP에 있는 php.ini-development 파일의 이름을 php.ini로 변경합니다. php.ini 파일은 PHP를 설정할 때 사용되는 파일입니다. 확장기능을 추가하거나 가상 호스트를 설정할 때 이 파일이 사용됩니다.
+
+PHP 설치를 마무리하기 위해서는 php.ini 파일의 내용을 조금 수정해야 합니다. 수정하지 않으면 PHP에서 MySQL, GD와 같은 확장기능을 불러올 때 문제가 발생할 수도 있기 때문입니다. 우선 ; extension_dir = "./" 을 extension_dir = "C:\PHP\ext\" 로 수정합니다. 문자열 앞의 세미콜론은 꼭 삭제하시기 바랍니다. php.ini 에서 세미콜론은 주석으로 사용됩니다. 메모장에서 검색한 후 수정하면 편합니다.
+
+그리고 Windows Extensions 부분에 있는 확장기능 설정 중에서, PHP가 MySQL 관련 확장기능 DLL 파일을 사용할 수 있도록 해야 합니다.
+
+extension=php_mysql.dll
+extension=php_mysqli.dll
+extension=php_pdo_mysql.dll
+
+이렇게 세 개의 파일을 사용할 수 있도록 문자열 앞에 있는 세미콜론을 삭제해줍니다. 주석을 삭제합니다.
+
+모든 내용을 수정했다면, php.ini 파일을 C:\Windows 폴더로 잘라내기/붙여넣기이동O, 복사X 합니다. 복사/붙여넣기가 아니라 꼭 잘라내기를 하시기 바랍니다. 왜냐하면 PHP 폴더에도 php.ini가 있는 경우에는 Windows 폴더의 php.ini와 서로 충돌이 발생할 수도 있기 때문입니다.
+
+
+
+php와 apache 연결
+아파치 서버와 PHP의 설치를 모두 마쳤으니, 이제는 아파치 서버와 PHP를 서로 연동시켜야 합니다. 아파치 서버와 PHP는 따로 설치되었기 때문에, 이 둘을 연동시켜주는 작업은 꼭 필요합니다.
+
+우선, 아파치 서버의 기본 설정 파일을 수정해야 합니다. C:\Apache24\conf\httpd.conf 파일을 메모장에서 불러옵니다. 그리고 맨 아래쪽에 다음의 내용을 추가합니다.
+
+PHPIniDir "C:/Windows"
+LoadModule php5_module "C:/PHP/php5apache2_4.dll"
+AddType application/x-httpd-php .html .php
+
+
+위의 내용을 아파치 서버 설정 파일에 추가함으로써 아파치 서버와 PHP는 서로 연동됩니다. 모든 설정을 저장한 후, Windows 서비스 관리자에서 아파치 서버를 재시작하면 PHP와 아파치 서버가 함께 시작됩니다.
+
+
+
+
+참고 사이트
+http://www.erzsamatory.net/172
